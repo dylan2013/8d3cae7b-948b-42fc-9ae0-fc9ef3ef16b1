@@ -1,0 +1,23 @@
+<h3 mat-dialog-title>請指定幹部 :  {{ this.data.classCadre.cadreType.Cadrename }}</h3>
+<mat-dialog-content class="mat-typography">
+  <!-- <h3>請選一位班上學生：</h3> -->
+  <p>
+    <mat-form-field appearance="fill">
+      <mat-label>選擇一位學生</mat-label>
+      <mat-select
+        [(ngModel)]="selectedStudent"
+        (selectionChange)="changeStud()">
+        <mat-option
+          *ngFor="let stud of this.data.students"
+          [value]="stud">
+          {{ stud.SeatNo }} {{ stud.StudentName }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+  </p>
+  <div *ngIf="errMsg" class="text-danger"> {{ errMsg }} </div>
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+  <button mat-button mat-dialog-close>取消</button>
+  <button mat-button (click)="saveCadre()">儲存</button>
+</mat-dialog-actions>
