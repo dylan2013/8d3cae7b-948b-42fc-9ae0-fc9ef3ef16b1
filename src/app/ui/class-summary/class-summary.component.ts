@@ -3,6 +3,7 @@ import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dial
 import { CadreService, CadreTypeInfo, ClassInfo, StudentInfo, CadreInfo, ClassCadreRecord } from './../../dal/cadre.service';
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import * as XLSX from 'xlsx';
+import * as moment from 'moment';
 
 @Component({
   selector: 'app-class-summary',
@@ -15,12 +16,21 @@ export class ClassSummaryComponent implements OnInit {
   classList = [];  // 根據教師ID取得班級清單
   studentList: StudentInfo[]; // 指定班級的學生清單
   dicStuds: { [studID: string]: StudentInfo } = {};  // 學生資料的 Dictionary 資料結構
-
   currentSemester: any;       // 目前學年學期
-  isCurrentSemester = true;  // 是否是目前學年學期。如果是，才可以編輯資料。
-  selectedClass: ClassInfo;  // 被選擇的班級
   selectedSchoolYear;  // 選擇的學年度
   selectedSemester;      // 選擇的學期
+
+  moment = require('moment'); // 使用元件
+  currentDateTime: any;       // 可以設定幹部的期間
+  selectedStart;  // 開始日期
+  selectedEnd;      // 結束日期
+  selectedNow;      // 結束日期
+
+  isCanSelectCarde = true;  // 是否是目前學年學期。如果是，才可以編輯資料。
+
+  isCurrentSemester = true;  // 是否是目前學年學期。如果是，才可以編輯資料。
+  selectedClass: ClassInfo;  // 被選擇的班級
+
 
   schoolYearNumbers = [];
   semesterNumbers = [1, 2];
@@ -49,7 +59,6 @@ export class ClassSummaryComponent implements OnInit {
     this.isLoading = true;
 
 
-
     // 1. get Cadre Types
     this.cadreTypes = await this.cadreService.getCadreTypes();
     // console.log(this.cadreTypes);
@@ -64,6 +73,9 @@ export class ClassSummaryComponent implements OnInit {
 
     // 5. get Class Cadres Students of the specificed semesters.
     await this.reloadCadreData();
+
+    // 6. 取得目前輸入開始結束入期
+    await this.getOpenTeacherCadreDate();
 
   }
 
@@ -127,6 +139,32 @@ export class ClassSummaryComponent implements OnInit {
     this.schoolYearNumbers.push(this.selectedSchoolYear);
     this.schoolYearNumbers.push(this.selectedSchoolYear + 1);
 
+  }
+
+  async getOpenTeacherCadreDate() {
+    // this.semesters = await this.cadreService.getSemestersByClassID(this.selectedClass.ClassID);
+    // console.log(this.semesters);
+    this.currentDateTime = await this.cadreService.getOpenTeacherCadreDate();
+
+
+    const startDate = moment(this.currentDateTime.Response.StartDate);
+    const endDate = moment(this.currentDateTime.Response.EndDate);
+    const nowDate = moment(this.currentDateTime.Response.Now);
+
+    if (nowDate.format("YYYY-MM-DD") >= startDate.format("YYYY-MM-DD")
+    && nowDate.format("YYYY-MM-DD") <= endDate.format("YYYY-MM-DD")){
+      this.isCanSelectCarde = true;
+    } else {
+      this.isCanSelectCarde = false;
+    }
+
+    console.log("開始時間 : " + startDate.format("YYYY-MM-DD"));
+    console.log("結束時間 : " + endDate.format("YYYY-MM-DD"));
+    console.log("目前時間 : " + nowDate.format("YYYY-MM-DD"));
+
+    this.selectedStart = startDate.format("YYYY-MM-DD"); // 開始日期
+    this.selectedEnd = endDate.format("YYYY-MM-DD"); // 結束日期
+    this.selectedNow = nowDate.format("YYYY-MM-DD"); // 目前日期
   }
 
   // tslint:disable-next-line:typedef

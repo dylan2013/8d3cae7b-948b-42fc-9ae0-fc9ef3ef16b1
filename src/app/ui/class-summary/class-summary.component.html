@@ -1,13 +1,24 @@
 <div class="container-fluid cbs d-flex justify-content-between flex-column">
-  <div id="index" page>
-    <nav aria-label="breadcrumb text-nowrap text-truncate">
+  <div id="index" page style="width:80%; margin-left:auto; margin-right:auto;">
+    <nav aria-label="breadcrumb text-nowrap text-truncate" >
       <ol class="breadcrumb">
-        <li class="breadcrumb-item active" aria-current="page">班級幹部管理</li>
+        <li class="breadcrumb-item active"aria-current="page">班級幹部登錄</li>
       </ol>
     </nav>
-    <div class="alert alert-info" role="alert">
-      說明:僅能輸入 預設學年期 幹部資料<button class="button" style="margin-left: 10px;"
-        (click)="ChangDefSchool()"><span>回到預設學年期</span></button>
+    <div>
+      <div class="alert alert-info alert-dismissible fade show "  role="alert">
+        <span>目前時間：{{ selectedNow }} (狀態：{{isCanSelectCarde?"可輸入幹部資料":"未在輸入期間"}})</span>
+        <br>
+        <span>輸入起訖時間：{{ selectedStart }} ~ {{ selectedEnd }}</span>
+        <br>
+        <span>＊.僅能輸入目前學年期的幹部資料</span>
+        <br>
+        <span>＊.幹部名稱 與 擔任人數 皆由校務系統後台設置</span>
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+
     </div>
     <div class="d-flex flex-column flex-sm-row">
       <mat-form-field appearance="legacy" class="mr-0 mr-sm-2">
@@ -22,7 +33,7 @@
       <mat-form-field appearance="legacy" class="mr-0 mr-sm-2">
         <mat-label>學年度</mat-label>
         <!--<input type="number" required step="1" max="{{ maxSchoolYear }}" min="{{ minSchoolYear }}" matInput
-          [(ngModel)]="selectedSchoolYear" (change)="reloadCadreData()" />-->
+              [(ngModel)]="selectedSchoolYear" (change)="reloadCadreData()" />-->
         <mat-select [(ngModel)]="selectedSchoolYear" (selectionChange)="reloadCadreData()">
           <mat-option id="" [value]="schoolYear"
             *ngFor="let schoolYear of schoolYearNumbers">{{schoolYear}}</mat-option>
@@ -32,24 +43,22 @@
       <mat-form-field appearance="legacy" class="mr-0 mr-sm-2">
         <mat-label>學期</mat-label>
         <!--<input type="number" required step="1" max="2" min="1" matInput [(ngModel)]="selectedSemester"
-          (change)="reloadCadreData()" />-->
+              (change)="reloadCadreData()" />-->
         <mat-select [(ngModel)]="selectedSemester" (selectionChange)="reloadCadreData()" [value]="selectedSemester">
           <mat-option [value]="semester" *ngFor="let semester of semesterNumbers">{{semester}}</mat-option>
         </mat-select>
       </mat-form-field>
-      <mat-spinner *ngIf="isLoading" diameter="40" class="ml-4 mt-1"></mat-spinner>
 
-
-      <!-- <a>
-          <mat-checkbox [(ngModel)]="showAllStudents" (ngModelChange)="queryStudentAttendance()">顯示全部學生</mat-checkbox>
-        </a> -->
-
-      <!-- <div class="dropdown ml-auto mt-5 mt-sm-0 "> -->
-      <div class="ml-auto pr-2 d-flex align-items-center" style="padding-bottom: 1.34375em">
+      <div style="margin: auto; padding: 5px;">
+        <button class="button" (click)="ChangDefSchool()"><span>返回目前學年期</span></button>
+      </div>
+      <div style="margin: auto; padding: 5px;">
         <a style="cursor: pointer" (click)="exportToExcel()" class="">
-          <mat-icon> cloud_download</mat-icon>匯出
+          <mat-icon>cloud_download</mat-icon>匯出
         </a>
       </div>
+
+      <!-- <mat-spinner *ngIf="isLoading" diameter="40" class="ml-4 mt-1"></mat-spinner> -->
     </div>
     <div class="container">
       <div class="row">
@@ -77,16 +86,18 @@
                   {{ classCadre.student ? classCadre.student.SeatNo : "" }}
                 </td>
                 <td data-th="" style="padding: 0px;">
-                  <div *ngIf="isCurrentSemester">
-                    <button mat-icon-button *ngIf="!classCadre.student; else elseTmpl"
-                      (click)="openDialog(classCadre, $event)">
-                      <mat-icon aria-hidden="false" aria-label="create icon" color="primary">create</mat-icon>
-                    </button>
-                    <ng-template #elseTmpl>
-                      <button mat-icon-button (click)="removeCadre(classCadre)">
-                        <mat-icon aria-hidden="false" aria-label="delete icon" color="warn">delete_forever</mat-icon>
+                  <div *ngIf="isCanSelectCarde && isCanSelectCarde">
+                    <div *ngIf="isCurrentSemester">
+                      <button mat-icon-button *ngIf="!classCadre.student; else elseTmpl"
+                        (click)="openDialog(classCadre, $event)">
+                        <mat-icon aria-hidden="false" aria-label="create icon" color="primary">create</mat-icon>
                       </button>
-                    </ng-template>
+                      <ng-template #elseTmpl>
+                        <button mat-icon-button (click)="removeCadre(classCadre)">
+                          <mat-icon aria-hidden="false" aria-label="delete icon" color="warn">delete_forever</mat-icon>
+                        </button>
+                      </ng-template>
+                    </div>
                   </div>
                 </td>
               </tr>
@@ -97,6 +108,5 @@
       </div>
     </div>
   </div>
-
   <footer class="text-center p-2 mt-auto">Powered By ischool</footer>
 </div>

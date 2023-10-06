@@ -55,6 +55,14 @@ export class CadreService {
     return result ;
   }
 
+    // 取得-- New --班級學年度學期
+    async getOpenTeacherCadreDate() {
+      const contract = await this.contractService.getDefaultContract();
+      const result: any = await contract.send('_.GetOpenCadreDate', { } );
+
+      return result ;
+    }
+
   /**
    * 取得指定班級的班級幹部名單
    */

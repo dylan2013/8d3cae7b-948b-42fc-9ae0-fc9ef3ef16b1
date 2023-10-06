@@ -45,7 +45,7 @@ export class AddCadreDialogComponent implements OnInit {
     try {
       await this.service.addCadre(cadre as CadreInfo);
       this.dialogRef.close();
-    } catch(error) {
+    } catch (error) {
       this.errMsg = error ;
     }
   }

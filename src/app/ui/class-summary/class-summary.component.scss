@@ -2,13 +2,32 @@
   font-size: 25px;
 }
 
+table {
+  border-collapse: collapse; /* 合并边框 */
+  border-radius: 5px; /* 设置圆角半径 */
+  overflow: hidden; /* 隐藏溢出内容 */
+}
+
 table th {
   font-size: 25px;
+  padding: 5px; /* 可选：添加内边距以改进外观 */
+  border: 1px solid #ccc; /* 可选：添加边框以改进外观 */
 }
+
 
 table td {
   font-size: 25px;
+  padding: 5px; /* 可选：添加内边距以改进外观 */
+  border: 1px solid #ccc; /* 可选：添加边框以改进外观 */
 }
+
+.centered-container {
+  display: flex;
+  justify-content: center; /* 水平置中 */
+  align-items: center; /* 垂直置中 */
+  height: 100vh; /* 這個屬性可以使內容在整個視窗高度置中 */
+}
+
 
 .button {
   display: inline-block;
@@ -23,6 +42,7 @@ table td {
   cursor: pointer;
   margin: 5px;
 }
+
 
 .button span {
   cursor: pointer;
@@ -49,3 +69,9 @@ table td {
   opacity: 1;
   right: 0;
 }
+
+
+span{
+  font-size: 20px;
+}
+
