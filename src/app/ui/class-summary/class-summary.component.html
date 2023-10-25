@@ -7,9 +7,9 @@
     </nav>
     <div>
       <div class="alert alert-info alert-dismissible fade show "  role="alert">
-        <span>目前時間：{{ selectedNow }} (狀態：{{isCanSelectCarde?"可輸入幹部資料":"未在輸入期間"}})</span>
+        <span>＊.目前時間：{{ selectedNow }} (狀態：{{isCanSelectCarde?"請指定幹部學生":"未在輸入期間"}})</span>
         <br>
-        <span>輸入起訖時間：{{ selectedStart }} ~ {{ selectedEnd }}</span>
+        <span>＊.輸入起訖時間：{{ selectedStart }} ~ {{ selectedEnd }}</span>
         <br>
         <span>＊.僅能輸入目前學年期的幹部資料</span>
         <br>
@@ -62,7 +62,6 @@
     </div>
     <div class="container">
       <div class="row">
-        <div class="col-sm-1"></div>
         <!-- 班級幹部 -->
         <div class="col-sm table-responsive" #table>
           <table class="table-rwd table table-bordered table-hover kd-t">
@@ -88,8 +87,7 @@
                 <td data-th="" style="padding: 0px;">
                   <div *ngIf="isCanSelectCarde && isCanSelectCarde">
                     <div *ngIf="isCurrentSemester">
-                      <button mat-icon-button *ngIf="!classCadre.student; else elseTmpl"
-                        (click)="openDialog(classCadre, $event)">
+                      <button mat-icon-button *ngIf="!classCadre.student; else elseTmpl" (click)="openDialog(classCadre, $event)">
                         <mat-icon aria-hidden="false" aria-label="create icon" color="primary">create</mat-icon>
                       </button>
                       <ng-template #elseTmpl>

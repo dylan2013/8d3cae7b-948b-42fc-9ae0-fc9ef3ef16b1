@@ -24,7 +24,6 @@
     "bootstrap": "^4.5.3",
     "file-saver": "^2.0.5",
     "material-design-icons": "^3.0.1",
-    "moment": "^2.29.4",
     "nodexml": "^1.0.2",
     "rxjs": "^7.8.1",
     "tslib": "^2.6.2",

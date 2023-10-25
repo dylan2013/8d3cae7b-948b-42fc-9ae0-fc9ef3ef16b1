@@ -3,7 +3,6 @@ import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dial
 import { CadreService, CadreTypeInfo, ClassInfo, StudentInfo, CadreInfo, ClassCadreRecord } from './../../dal/cadre.service';
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import * as XLSX from 'xlsx';
-import * as moment from 'moment';
 
 @Component({
   selector: 'app-class-summary',
@@ -20,7 +19,6 @@ export class ClassSummaryComponent implements OnInit {
   selectedSchoolYear;  // 選擇的學年度
   selectedSemester;      // 選擇的學期
 
-  moment = require('moment'); // 使用元件
   currentDateTime: any;       // 可以設定幹部的期間
   selectedStart;  // 開始日期
   selectedEnd;      // 結束日期
@@ -146,26 +144,32 @@ export class ClassSummaryComponent implements OnInit {
     // console.log(this.semesters);
     this.currentDateTime = await this.cadreService.getOpenTeacherCadreDate();
 
+    const startDate = new Date(this.currentDateTime.Response.StartDate);
+    const endDate = new Date(this.currentDateTime.Response.EndDate);
+    const nowDate = new Date(this.currentDateTime.Response.Now);
 
-    const startDate = moment(this.currentDateTime.Response.StartDate);
-    const endDate = moment(this.currentDateTime.Response.EndDate);
-    const nowDate = moment(this.currentDateTime.Response.Now);
-
-    if (nowDate.format("YYYY-MM-DD") >= startDate.format("YYYY-MM-DD")
-    && nowDate.format("YYYY-MM-DD") <= endDate.format("YYYY-MM-DD")){
+    if (nowDate >= startDate && nowDate <= endDate){
       this.isCanSelectCarde = true;
     } else {
       this.isCanSelectCarde = false;
     }
 
-    console.log("開始時間 : " + startDate.format("YYYY-MM-DD"));
-    console.log("結束時間 : " + endDate.format("YYYY-MM-DD"));
-    console.log("目前時間 : " + nowDate.format("YYYY-MM-DD"));
+    console.log("開始時間 : " + this.formatDateToYYYYMMDD(startDate));
+    console.log("結束時間 : " + this.formatDateToYYYYMMDD(endDate));
+    console.log("目前時間 : " + this.formatDateToYYYYMMDD(nowDate));
 
-    this.selectedStart = startDate.format("YYYY-MM-DD"); // 開始日期
-    this.selectedEnd = endDate.format("YYYY-MM-DD"); // 結束日期
-    this.selectedNow = nowDate.format("YYYY-MM-DD"); // 目前日期
+    this.selectedStart = this.formatDateToYYYYMMDD(startDate); // 開始日期
+    this.selectedEnd = this.formatDateToYYYYMMDD(endDate); // 結束日期
+    this.selectedNow = this.formatDateToYYYYMMDD(nowDate); // 目前日期
   }
+
+  formatDateToYYYYMMDD(date) {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0'); // 月份从0开始，需要加1
+    const day = String(date.getDate()).padStart(2, '0');
+
+    return `${year}-${month}-${day}`;
+}
 
   // tslint:disable-next-line:typedef
   async changeClass() {
@@ -273,6 +277,5 @@ export class ClassSummaryComponent implements OnInit {
     const fileName = `${this.selectedClass.ClassName}班級幹部名冊.xlsx`;
     XLSX.writeFile(wb, fileName);
   }
-
 }
 
