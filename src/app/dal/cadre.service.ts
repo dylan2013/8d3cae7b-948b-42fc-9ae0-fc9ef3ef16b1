@@ -122,13 +122,14 @@ export class CadreService {
   }
 
   // 刪除一筆班級幹部紀錄
-  async deleteCadre(cadreUID: string) {
+  async deleteCadre(cadre: ClassCadreRecord) {
     const contract = await this.contractService.getDefaultContract();
     const rst: any = await contract.send('_.DeleteCadre', {
       Request: {
-        UID: cadreUID
+        UID: cadre.cadre.uid
       }
     });
+    this.addLog("刪除" , "刪除" , `學年度「${cadre.cadre.schoolyear}」學期「${cadre.cadre.schoolyear}」班級「${cadre.cadre.text}」刪除幹部「${cadre.cadre.cadrename}」學生「${cadre.student.StudentName}」`);
   }
 
   // 新增一筆班級幹部紀錄
@@ -146,7 +147,22 @@ export class CadreService {
         }
       }
     });
+    this.addLog("新增" , "新增" , `學年度「${cadre.schoolyear}」學期「${cadre.schoolyear}」班級「${cadre.text}」新增幹部「${cadre.cadrename}」學生「${cadre.studentname}」`);
   }
+
+    // 新增系統Log
+    async addLog(actionType: string , action: string, description: string) {
+    const contract = await this.contractService.getDefaultContract();
+    const rst: any = await contract.send('_.InsertLogFromWeb', {
+    Request: {
+        ActionType: actionType,
+        Action: action,
+        TargetCategory: 'teacher',
+        ActionBy: '班級幹部登錄',
+        Description: description,
+        }
+    });
+    }
 }
 
 export interface CadreTypeInfo {
@@ -167,6 +183,7 @@ export interface CadreInfo {
   schoolyear: string;
   semester: string;
   studentid: string;
+  studentname: string;
   referencetype: string;
   cadrename: string;
   text: string;

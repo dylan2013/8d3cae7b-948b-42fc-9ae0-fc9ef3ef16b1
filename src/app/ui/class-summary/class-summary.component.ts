@@ -154,6 +154,7 @@ export class ClassSummaryComponent implements OnInit {
       this.isCanSelectCarde = false;
     }
 
+    //
     console.log("開始時間 : " + this.formatDateToYYYYMMDD(startDate));
     console.log("結束時間 : " + this.formatDateToYYYYMMDD(endDate));
     console.log("目前時間 : " + this.formatDateToYYYYMMDD(nowDate));
@@ -226,7 +227,7 @@ export class ClassSummaryComponent implements OnInit {
   // tslint:disable-next-line:typedef
   async removeCadre(classCadre) {
     // console.log(classCadre.cadre.uid);
-    await this.cadreService.deleteCadre(classCadre.cadre.uid);
+    await this.cadreService.deleteCadre(classCadre);
     await this.reloadCadreData();
   }
 

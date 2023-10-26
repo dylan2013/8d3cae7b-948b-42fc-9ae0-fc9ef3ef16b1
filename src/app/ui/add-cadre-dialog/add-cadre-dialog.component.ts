@@ -37,6 +37,7 @@ export class AddCadreDialogComponent implements OnInit {
       schoolyear: this.data.schoolYear,
       semester: this.data.semester ,
       studentid: this.selectedStudent.StudentId,
+      studentname: this.selectedStudent.StudentName,
       referencetype: this.data.classCadre.cadreType.Nametype,
       cadrename: this.data.classCadre.cadreType.Cadrename ,
       text: this.data.class.ClassName
