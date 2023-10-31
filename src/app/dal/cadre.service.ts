@@ -129,7 +129,7 @@ export class CadreService {
         UID: cadre.cadre.uid
       }
     });
-    this.addLog("刪除" , "刪除" , `學年度「${cadre.cadre.schoolyear}」學期「${cadre.cadre.schoolyear}」班級「${cadre.cadre.text}」刪除幹部「${cadre.cadre.cadrename}」學生「${cadre.student.StudentName}」`);
+    this.addLog("刪除" , "刪除" , `學年度「${cadre.cadre.schoolyear}」學期「${cadre.cadre.semester}」班級「${cadre.cadre.text}」刪除幹部「${cadre.cadre.cadrename}」學生「${cadre.student.StudentName}」`);
   }
 
   // 新增一筆班級幹部紀錄
@@ -147,7 +147,7 @@ export class CadreService {
         }
       }
     });
-    this.addLog("新增" , "新增" , `學年度「${cadre.schoolyear}」學期「${cadre.schoolyear}」班級「${cadre.text}」新增幹部「${cadre.cadrename}」學生「${cadre.studentname}」`);
+    this.addLog("新增" , "新增" , `學年度「${cadre.schoolyear}」學期「${cadre.semester}」班級「${cadre.text}」新增幹部「${cadre.cadrename}」學生「${cadre.studentname}」`);
   }
 
     // 新增系統Log
