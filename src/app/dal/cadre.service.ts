@@ -10,7 +10,7 @@ export class CadreService {
 
   constructor(
     private contractService: ContractService,
-    private http: HttpClient){
+    private http: HttpClient) {
 
   }
 
@@ -50,18 +50,18 @@ export class CadreService {
   // 取得班級學年度學期
   async getCurrentSemester() {
     const contract = await this.contractService.getDefaultContract();
-    const result: any = await contract.send('_.GetCurrentSemester', { } );
+    const result: any = await contract.send('_.GetCurrentSemester', {});
 
-    return result ;
+    return result;
   }
 
-    // 取得-- New --班級學年度學期
-    async getOpenTeacherCadreDate() {
-      const contract = await this.contractService.getDefaultContract();
-      const result: any = await contract.send('_.GetOpenCadreDate', { } );
+  // 取得-- New --班級學年度學期
+  async getOpenTeacherCadreDate() {
+    const contract = await this.contractService.getDefaultContract();
+    const result: any = await contract.send('_.GetOpenCadreDate', {});
 
-      return result ;
-    }
+    return result;
+  }
 
   /**
    * 取得指定班級的班級幹部名單
@@ -129,7 +129,7 @@ export class CadreService {
         UID: cadre.cadre.uid
       }
     });
-    this.addLog("刪除" , "刪除" , `學年度「${cadre.cadre.schoolyear}」學期「${cadre.cadre.semester}」班級「${cadre.cadre.text}」刪除幹部「${cadre.cadre.cadrename}」學生「${cadre.student.StudentName}」`);
+    this.addLog("刪除", "刪除", `學年度「${cadre.cadre.schoolyear}」學期「${cadre.cadre.semester}」班級「${cadre.cadre.text}」刪除幹部「${cadre.cadre.cadrename}」學生「${cadre.student.StudentName}」`);
   }
 
   // 新增一筆班級幹部紀錄
@@ -140,33 +140,34 @@ export class CadreService {
         Cadre: {
           CadreName: cadre.cadrename,
           ReferenceType: cadre.referencetype,
-          SchoolYear: cadre.schoolyear ,
+          SchoolYear: cadre.schoolyear,
           Semester: cadre.semester,
-          StudentID: cadre.studentid ,
+          StudentID: cadre.studentid,
           Text: cadre.text
         }
       }
     });
-    this.addLog("新增" , "新增" , `學年度「${cadre.schoolyear}」學期「${cadre.semester}」班級「${cadre.text}」新增幹部「${cadre.cadrename}」學生「${cadre.studentname}」`);
+
+    this.addLog("新增", "新增", `學年度「${cadre.schoolyear}」學期「${cadre.semester}」班級「${cadre.text}」新增幹部「${cadre.cadrename}」學生「${cadre.studentname}」`);
   }
 
-    // 新增系統Log
-    async addLog(actionType: string , action: string, description: string) {
+  // 新增系統Log
+  async addLog(actionType: string, action: string, description: string) {
     const contract = await this.contractService.getDefaultContract();
     const rst: any = await contract.send('_.InsertLogFromWeb', {
-    Request: {
+      Request: {
         ActionType: actionType,
         Action: action,
         TargetCategory: 'teacher',
         ActionBy: '班級幹部登錄',
         Description: description,
-        }
+      }
     });
-    }
+  }
 }
 
 export interface CadreTypeInfo {
-  Uid: string ;
+  Uid: string;
   Cadrename: string;
   Index: number;
   Merita: number;
@@ -179,7 +180,7 @@ export interface CadreTypeInfo {
 
 
 export interface CadreInfo {
-  uid: string ;
+  uid: string;
   schoolyear: string;
   semester: string;
   studentid: string;
@@ -206,15 +207,15 @@ export class StudentInfo {
     this.StudentId = studentId;
     this.StudentName = studentName;
     this.SeatNo = seatNo;
-    this.StudentNumber = studNumber ;
+    this.StudentNumber = studNumber;
   }
 }
 
 /** 呈現出畫面上的一筆紀錄 */
 export class ClassCadreRecord {
   cadreType: CadreTypeInfo;
-  cadre: CadreInfo ;
-  student: StudentInfo ;
+  cadre: CadreInfo;
+  student: StudentInfo;
 }
 
 export interface SemesterInfo {

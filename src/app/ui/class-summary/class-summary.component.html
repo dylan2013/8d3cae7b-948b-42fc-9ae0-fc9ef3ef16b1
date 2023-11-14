@@ -1,11 +1,10 @@
 <div class="container-fluid cbs d-flex justify-content-between flex-column">
-  <div id="index" page style="width:80%; margin-left:auto; margin-right:auto;">
+  <div id="index" page style="width:95%; margin-left:auto; margin-right:auto;">
     <nav aria-label="breadcrumb text-nowrap text-truncate" >
       <ol class="breadcrumb">
         <li class="breadcrumb-item active"aria-current="page">班級幹部登錄</li>
       </ol>
     </nav>
-    <div>
       <div class="alert alert-info alert-dismissible fade show "  role="alert">
         <span>＊.目前時間：{{ selectedNow }} (狀態：{{isCanSelectCarde?"已開放輸入":"未在輸入期間"}})</span>
         <br>
@@ -18,10 +17,9 @@
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
-
-    </div>
     <div class="d-flex flex-column flex-sm-row">
-      <mat-form-field appearance="legacy" class="mr-0 mr-sm-2">
+      <div style="margin: auto; padding: 0px;">
+      <mat-form-field appearance="legacy" class="mr-1 mr-sm-2">
         <mat-label>選擇班級</mat-label>
         <mat-select #className [(ngModel)]="selectedClass" (selectionChange)="changeClass() ">
           <mat-option id="" [value]="cls" *ngFor="let cls of classList">
@@ -29,7 +27,8 @@
           </mat-option>
         </mat-select>
       </mat-form-field>
-
+    </div>
+      <div style="margin: auto; padding: 0px;">
       <mat-form-field appearance="legacy" class="mr-0 mr-sm-2">
         <mat-label>學年度</mat-label>
         <!--<input type="number" required step="1" max="{{ maxSchoolYear }}" min="{{ minSchoolYear }}" matInput
@@ -39,7 +38,8 @@
             *ngFor="let schoolYear of schoolYearNumbers">{{schoolYear}}</mat-option>
         </mat-select>
       </mat-form-field>
-
+    </div>
+      <div style="margin: auto; padding: 0px;">
       <mat-form-field appearance="legacy" class="mr-0 mr-sm-2">
         <mat-label>學期</mat-label>
         <!--<input type="number" required step="1" max="2" min="1" matInput [(ngModel)]="selectedSemester"
@@ -48,11 +48,11 @@
           <mat-option [value]="semester" *ngFor="let semester of semesterNumbers">{{semester}}</mat-option>
         </mat-select>
       </mat-form-field>
-
-      <div style="margin: auto; padding: 5px;">
+    </div>
+      <div style="margin: auto; padding: 0px;">
         <button class="button" (click)="ChangDefSchool()"><span>返回目前學年期</span></button>
       </div>
-      <div style="margin: auto; padding: 5px;">
+      <div style="margin: auto; padding: 0px;">
         <a style="cursor: pointer" (click)="exportToExcel()" class="">
           <mat-icon>cloud_download</mat-icon>匯出
         </a>
@@ -64,7 +64,7 @@
       <div class="row">
         <!-- 班級幹部 -->
         <div class="col-sm table-responsive" #table>
-          <table class="table-rwd table table-bordered table-hover kd-t">
+          <table class="table-rwd table table-bordered table-hover">
             <thead class="thead-dark">
               <tr>
                 <th style="width: 10%">幹部</th>
@@ -84,7 +84,7 @@
                 <td data-th="座號">
                   {{ classCadre.student ? classCadre.student.SeatNo : "" }}
                 </td>
-                <td data-th="" style="padding: 0px;">
+                <td data-th="指定">
                   <div *ngIf="isCanSelectCarde && isCanSelectCarde">
                     <div *ngIf="isCurrentSemester">
                       <button mat-icon-button *ngIf="!classCadre.student; else elseTmpl" (click)="openDialog(classCadre, $event)">
@@ -95,6 +95,11 @@
                           <mat-icon aria-hidden="false" aria-label="delete icon" color="warn">delete_forever</mat-icon>
                         </button>
                       </ng-template>
+                        <div class="alert-container" id="alertContainer">
+                          <div class="alert-box" id="alertBox">
+                            已取消！
+                          </div>
+                        </div>
                     </div>
                   </div>
                 </td>

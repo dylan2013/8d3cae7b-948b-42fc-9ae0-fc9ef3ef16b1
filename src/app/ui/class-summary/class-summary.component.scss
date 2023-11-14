@@ -14,20 +14,11 @@ table th {
   border: 1px solid #ccc; /* 可选：添加边框以改进外观 */
 }
 
-
 table td {
   font-size: 20px;
   padding: 5px; /* 可选：添加内边距以改进外观 */
   border: 1px solid #ccc; /* 可选：添加边框以改进外观 */
 }
-
-.centered-container {
-  display: flex;
-  justify-content: center; /* 水平置中 */
-  align-items: center; /* 垂直置中 */
-  height: 100vh; /* 這個屬性可以使內容在整個視窗高度置中 */
-}
-
 
 .button {
   display: inline-block;
@@ -73,4 +64,26 @@ table td {
 
 span{
   font-size: 20px;
+}
+
+.alert-container {
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+  position: fixed;
+  bottom: -100px;
+  width: 100%;
+  transition: bottom 0.5s ease;
+  z-index: 999;
+}
+
+.alert-box {
+  background: #f0f0f0;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  padding: 15px;
+  max-width: 300px;
+  margin-bottom: 10px;
+  display: none;
 }

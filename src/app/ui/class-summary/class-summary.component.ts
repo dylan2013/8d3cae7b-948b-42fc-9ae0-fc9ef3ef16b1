@@ -3,6 +3,7 @@ import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dial
 import { CadreService, CadreTypeInfo, ClassInfo, StudentInfo, CadreInfo, ClassCadreRecord } from './../../dal/cadre.service';
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import * as XLSX from 'xlsx';
+import { log } from 'console';
 
 @Component({
   selector: 'app-class-summary',
@@ -20,13 +21,14 @@ export class ClassSummaryComponent implements OnInit {
   selectedSemester;      // 選擇的學期
 
   currentDateTime: any;       // 可以設定幹部的期間
+  nowDate: any;
   selectedStart;  // 開始日期
   selectedEnd;      // 結束日期
   selectedNow;      // 結束日期
 
-  isCanSelectCarde = true;  // 是否是目前學年學期。如果是，才可以編輯資料。
+  isCanSelectCarde = false;  // 是否是目前學年學期。如果是，才可以編輯資料。
 
-  isCurrentSemester = true;  // 是否是目前學年學期。如果是，才可以編輯資料。
+  isCurrentSemester = false;  // 是否是目前學年學期。如果是，才可以編輯資料。
   selectedClass: ClassInfo;  // 被選擇的班級
 
 
@@ -128,9 +130,12 @@ export class ClassSummaryComponent implements OnInit {
     // this.semesters = await this.cadreService.getSemestersByClassID(this.selectedClass.ClassID);
     // console.log(this.semesters);
     this.currentSemester = await this.cadreService.getCurrentSemester();
+
     // console.log(currentSemester);
     this.selectedSchoolYear = parseInt(this.currentSemester.Response.SchoolYear, 10);
     this.selectedSemester = parseInt(this.currentSemester.Response.Semester, 10);
+    this.nowDate = new Date(this.currentSemester.Response.Now);
+    console.log("目前時間 : " + this.formatDateToYYYYMMDD(this.nowDate));
 
     this.schoolYearNumbers.push(this.selectedSchoolYear - 2);
     this.schoolYearNumbers.push(this.selectedSchoolYear - 1);
@@ -144,33 +149,59 @@ export class ClassSummaryComponent implements OnInit {
     // console.log(this.semesters);
     this.currentDateTime = await this.cadreService.getOpenTeacherCadreDate();
 
-    const startDate = new Date(this.currentDateTime.Response.StartDate);
-    const endDate = new Date(this.currentDateTime.Response.EndDate);
-    const nowDate = new Date(this.currentDateTime.Response.Now);
+    let startDate = null;
+    let endDate = null;
 
-    if (nowDate >= startDate && nowDate <= endDate){
-      this.isCanSelectCarde = true;
+    if (this.currentDateTime.Response !== undefined) {
+      startDate = new Date(this.currentDateTime.Response.StartDate);
+      endDate = new Date(this.currentDateTime.Response.EndDate);
+
+      // 結束日期要加一天,減一秒才會是當天結束
+      endDate.setDate(endDate.getDate() + 1);
+      endDate.setSeconds(endDate.getSeconds() - 1);
+
+      if (this.nowDate >= startDate && this.nowDate <= endDate) {
+        this.isCanSelectCarde = true;
+      } else {
+        this.isCanSelectCarde = false; // 未在輸入期間
+      }
+
+      console.log("開始時間 : " + this.formatDateToYYYYMMDD(startDate));
+      console.log("結束時間 : " + this.formatDateToYYYYMMDD(endDate));
+
     } else {
-      this.isCanSelectCarde = false;
+      this.isCanSelectCarde = false; // 未在輸入期間
     }
 
-    //
-    console.log("開始時間 : " + this.formatDateToYYYYMMDD(startDate));
-    console.log("結束時間 : " + this.formatDateToYYYYMMDD(endDate));
-    console.log("目前時間 : " + this.formatDateToYYYYMMDD(nowDate));
 
-    this.selectedStart = this.formatDateToYYYYMMDD(startDate); // 開始日期
-    this.selectedEnd = this.formatDateToYYYYMMDD(endDate); // 結束日期
-    this.selectedNow = this.formatDateToYYYYMMDD(nowDate); // 目前日期
+    if (startDate !== null) {
+      this.selectedStart = this.formatDateToYYYYMMDD(startDate); // 開始日期
+    } else {
+      this.selectedStart = '[未設定開始時間]';
+    }
+    if (endDate !== null) {
+      this.selectedEnd = this.formatDateToYYYYMMDD(endDate); // 結束日期
+    } else {
+      this.selectedEnd = '[未設定結束時間]';
+    }
+
+    if (this.nowDate !== null) {
+      this.selectedNow = this.formatDateToYYYYMMDD(this.nowDate); // 目前日期
+    } else {
+
+    }
+
+
   }
 
   formatDateToYYYYMMDD(date) {
     const year = date.getFullYear();
     const month = String(date.getMonth() + 1).padStart(2, '0'); // 月份从0开始，需要加1
     const day = String(date.getDate()).padStart(2, '0');
-
-    return `${year}-${month}-${day}`;
-}
+    const hour = String(date.getHours()).padStart(2, '0');
+    const minute = String(date.getMinutes()).padStart(2, '0');
+    return `${year}-${month}-${day} ${hour}:${minute} `;
+  }
 
   // tslint:disable-next-line:typedef
   async changeClass() {
@@ -226,9 +257,30 @@ export class ClassSummaryComponent implements OnInit {
 
   // tslint:disable-next-line:typedef
   async removeCadre(classCadre) {
-    // console.log(classCadre.cadre.uid);
-    await this.cadreService.deleteCadre(classCadre);
-    await this.reloadCadreData();
+    const result = confirm("你確定要刪除幹部紀錄嗎？");
+
+    if (result) {
+      await this.cadreService.deleteCadre(classCadre);
+      await this.reloadCadreData();
+    } else {
+      this.showAlert();
+      // 在這裡可以執行取消時的操作
+    }
+  }
+
+  showAlert() {
+    const alertContainer = document.getElementById('alertContainer');
+    const alertBox = document.getElementById('alertBox');
+
+    alertContainer.style.bottom = '20px';
+    alertBox.style.display = 'block';
+
+    setTimeout(() => {
+      alertContainer.style.bottom = '-100px';
+      setTimeout(() => {
+        alertBox.style.display = 'none';
+      }, 500); // 0.5 秒後隱藏提示框
+    }, 3000); // 3 秒後隱藏提示框
   }
 
   // tslint:disable-next-line:typedef
